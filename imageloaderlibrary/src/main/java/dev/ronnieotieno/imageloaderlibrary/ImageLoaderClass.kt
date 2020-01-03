@@ -9,16 +9,28 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URL
 
-class ImageLoaderClass {
+class ImageLoader {
 
-    fun load(imageUrl: String, imageView: ImageView) {
+    lateinit var imageView: ImageView
+
+    fun load(imageUrl: String) {
         CoroutineScope(IO).launch {
             val url = URL(imageUrl)
             val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
 
+
             withContext(Dispatchers.Main) {
-                imageView.setImageBitmap(image)
+
+                if (::imageView.isInitialized) {
+                    imageView.setImageBitmap(image)
+                }
             }
         }
+    }
+
+    fun into(imageViewSend: ImageView) {
+
+        imageView = imageViewSend
+
     }
 }
