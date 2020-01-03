@@ -11,26 +11,14 @@ import java.net.URL
 
 class ImageLoader {
 
-    lateinit var imageView: ImageView
-
-    fun load(imageUrl: String) {
+    fun load(imageUrl: String, imageView: ImageView) {
         CoroutineScope(IO).launch {
             val url = URL(imageUrl)
             val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
 
-
             withContext(Dispatchers.Main) {
-
-                if (::imageView.isInitialized) {
-                    imageView.setImageBitmap(image)
-                }
+                imageView.setImageBitmap(image)
             }
         }
-    }
-
-    fun into(imageViewSend: ImageView) {
-
-        imageView = imageViewSend
-
     }
 }
