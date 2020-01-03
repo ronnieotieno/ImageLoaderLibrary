@@ -22,24 +22,23 @@ class ImageLoader : ComponentCallbacks2 {
     private lateinit var job: Job
     private val _temp = ImageLoader()
 
-    fun load(image: String): ImageLoader {
+    fun load(image: String) {
         _temp.imageUrl = image
-        return this
+
     }
 
 
-    fun into(imageView: ImageView): ImageLoader {
+    fun into(imageView: ImageView) {
         _temp.imageView = imageView
-        load2(imageUrl,imageView)
-        return this
+        load2(imageUrl, imageView)
+
     }
 
 
-    fun load2(imageUrl: String, imageView: ImageView): ImageLoader {
+    fun load2(imageUrl: String, imageView: ImageView) {
 
         loadImage(imageUrl, imageView)
 
-        return this
     }
 
 
