@@ -13,33 +13,12 @@ import java.net.URL
 
 class ImageLoader : ComponentCallbacks2 {
 
-    // private lateinit var memoryCache2: LruCache<String, Bitmap>
     private lateinit var imageUrl: String
     private lateinit var imageView: ImageView
 
 
     lateinit var memoryCache: LruCache<String, Bitmap>
     private lateinit var job: Job
-    private val _temp = ImageLoader()
-
-    fun load(image: String) {
-        _temp.imageUrl = image
-
-    }
-
-
-    fun into(imageView: ImageView) {
-        _temp.imageView = imageView
-        load2(imageUrl, imageView)
-
-    }
-
-
-    fun load2(imageUrl: String, imageView: ImageView) {
-
-        loadImage(imageUrl, imageView)
-
-    }
 
 
     fun loadImage(imageUrl: String, imageView: ImageView) {
