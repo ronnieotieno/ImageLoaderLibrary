@@ -5,16 +5,16 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import android.util.LruCache
 import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import java.net.URL
 
 
-class ImageLoader(private val context:Context) : ComponentCallbacks2 {
+class ImageLoader(private val context: Context) : ComponentCallbacks2 {
 
     lateinit var memoryCache: LruCache<String, Bitmap>
     private lateinit var job: Job
@@ -36,12 +36,15 @@ class ImageLoader(private val context:Context) : ComponentCallbacks2 {
 
         job = Job()
         job.invokeOnCompletion {
-            it?.message.let{
+            it?.message.let {
                 var msg = it
-                if(msg.isNullOrBlank()){
+                if (msg.isNullOrBlank()) {
                     msg = "Unknown cancellation error."
                 }
-               Toast.makeText(context,msg,Toast.LENGTH_SHORT).show()
+
+                GlobalScope.launch(Main) {
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
