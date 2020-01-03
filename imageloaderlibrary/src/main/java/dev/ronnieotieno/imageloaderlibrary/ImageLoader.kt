@@ -9,19 +9,24 @@ import android.util.LruCache
 import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import java.net.URL
 
 
 class ImageLoader(private val context: Context) : ComponentCallbacks2 {
 
-    lateinit var memoryCache: LruCache<String, Bitmap>
+    private lateinit var memoryCache: LruCache<String, Bitmap>
     private lateinit var job: Job
 
 
-    fun load(imageUrl: String, imageView: ImageView) {
+    fun load(dataSource: Any? = null, destination: Any? = null) {
 
+        if (dataSource != null && dataSource is String && destination != null && destination is ImageView) {
+            getImage(dataSource, destination)
+        }
+
+    }
+
+    private fun getImage(imageUrl: String, imageView: ImageView) {
         val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
 
         val cacheSize = maxMemory / 8
@@ -42,29 +47,28 @@ class ImageLoader(private val context: Context) : ComponentCallbacks2 {
                     msg = "Unknown cancellation error."
                 }
 
-                GlobalScope.launch(Main) {
+                GlobalScope.launch(Dispatchers.Main) {
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
-        CoroutineScope(IO + job).launch {
+        CoroutineScope(Dispatchers.IO + job).launch {
 
             loadBitmap(imageUrl, imageView)
 
         }
-
     }
 
     fun cancel() {
         if (::job.isInitialized) {
             if (job.isActive) {
-                job.cancel(CancellationException("Resetting job"))
+                job.cancel(CancellationException("Cancelled"))
             }
         }
     }
 
-    suspend fun loadBitmap(imageUrl: String, imageView: ImageView) {
+    private suspend fun loadBitmap(imageUrl: String, imageView: ImageView) {
 
         val bitmap: Bitmap? = memoryCache[imageUrl]
 
