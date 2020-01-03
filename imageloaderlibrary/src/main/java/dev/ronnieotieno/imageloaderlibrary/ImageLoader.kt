@@ -1,27 +1,26 @@
 package dev.ronnieotieno.imageloaderlibrary
 
 import android.content.ComponentCallbacks2
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.util.LruCache
 import android.widget.ImageView
+import android.widget.Toast
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import java.net.URL
 
 
-class ImageLoader : ComponentCallbacks2 {
-
-    private lateinit var imageUrl: String
-    private lateinit var imageView: ImageView
-
+class ImageLoader(private val context:Context) : ComponentCallbacks2 {
 
     lateinit var memoryCache: LruCache<String, Bitmap>
     private lateinit var job: Job
 
 
-    fun loadImage(imageUrl: String, imageView: ImageView) {
+    fun load(imageUrl: String, imageView: ImageView) {
 
         val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
 
@@ -35,12 +34,31 @@ class ImageLoader : ComponentCallbacks2 {
             }
         }
 
-        job = CoroutineScope(IO).launch {
+        job = Job()
+        job.invokeOnCompletion {
+            it?.message.let{
+                var msg = it
+                if(msg.isNullOrBlank()){
+                    msg = "Unknown cancellation error."
+                }
+               Toast.makeText(context,msg,Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        CoroutineScope(IO + job).launch {
 
             loadBitmap(imageUrl, imageView)
 
         }
 
+    }
+
+    fun cancel() {
+        if (::job.isInitialized) {
+            if (job.isActive) {
+                job.cancel(CancellationException("Resetting job"))
+            }
+        }
     }
 
     suspend fun loadBitmap(imageUrl: String, imageView: ImageView) {
