@@ -5,11 +5,13 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.LruCache
 import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.coroutines.*
-import java.io.FileNotFoundException
 import java.net.URL
 
 
@@ -24,6 +26,7 @@ class ImageLoader(private val context: Context) : ComponentCallbacks2 {
         if (dataSource != null && dataSource is String && destination != null && destination is ImageView) {
             getImage(dataSource, destination)
         }
+
 
     }
 
@@ -81,15 +84,50 @@ class ImageLoader(private val context: Context) : ComponentCallbacks2 {
             val url = URL(imageUrl)
 
             try {
-                val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-                withContext(Dispatchers.Main) {
-                    imageView.setImageBitmap(image)
+                if (isInternetAvailable(context)) {
+                    val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                    withContext(Dispatchers.Main) {
+                        imageView.setImageBitmap(image)
+                    }
+                    if (imageUrl != null && image != null) {
+                        memoryCache.put(imageUrl, image)
+                    }
                 }
-                memoryCache.put(imageUrl, image)
-            } catch (e: FileNotFoundException) {
+            } catch (e: Error) {
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun isInternetAvailable(context: Context): Boolean {
+        var result = false
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val networkCapabilities = connectivityManager.activeNetwork ?: return false
+            val actNw =
+                connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+            result = when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            connectivityManager.run {
+                connectivityManager.activeNetworkInfo?.run {
+                    result = when (type) {
+                        ConnectivityManager.TYPE_WIFI -> true
+                        ConnectivityManager.TYPE_MOBILE -> true
+                        ConnectivityManager.TYPE_ETHERNET -> true
+                        else -> false
+                    }
+
+                }
+            }
+        }
+
+        return result
     }
 
     override fun onLowMemory() {
