@@ -1,7 +1,7 @@
 package dev.ronnieotieno.imageloader
 
 import android.content.Context
-import android.graphics.Color
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -30,14 +30,50 @@ class RecyclerViewAdapter(var context: Context, var images: List<ImagesDataClass
 
         val image = images[position]
 
+        holder.sendData(image)
+
         val imageLoader = ImageLoader(context)
         imageLoader.load(image.urls.regular, holder.binding.imageView)
-        holder.binding.linear.setBackgroundColor(Color.parseColor(image.color))
+        //holder.binding.cardview.setBackgroundColor(Color.parseColor(image.color))
+        holder.binding.creator.text = image.user.name
+        holder.binding.likes.text = "Likes: ${image.likes}"
+
+        image.categories[0].id
 
     }
 
-    class MyViewHolder(public var binding: PictureLayoutBinding) :
+    inner class MyViewHolder(var binding: PictureLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        var imageSend: ImagesDataClass? = null
+        fun sendData(image: ImagesDataClass) {
+
+            imageSend = image
+
+
+        }
+
+        init {
+
+            binding.root.setOnClickListener {
+
+                var category = "Categories: "
+                if (imageSend?.categories!!.size > 1) {
+                    for (i in imageSend!!.categories) {
+                        category += "${i.title}, "
+                    }
+                    category = category.substring(0, category.length - 2)
+                } else {
+                    category = "Category: ${imageSend!!.categories[0].title}"
+                }
+                val intent = Intent(context, DetailsActivity::class.java)
+                intent.putExtra("image", imageSend?.urls?.regular)
+                intent.putExtra("Creator", imageSend?.user?.name)
+                intent.putExtra("likes", "Likes: ${imageSend?.likes}" + "\n" + category)
+                intent.putExtra("creatorPic", imageSend?.user?.profile_image?.medium)
+
+                context.startActivity(intent)
+            }
+        }
 
     }
 
