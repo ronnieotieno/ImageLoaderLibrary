@@ -9,6 +9,7 @@ import android.util.LruCache
 import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.coroutines.*
+import java.io.FileNotFoundException
 import java.net.URL
 
 
@@ -78,12 +79,16 @@ class ImageLoader(private val context: Context) : ComponentCallbacks2 {
             }
         } else {
             val url = URL(imageUrl)
-            val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
 
-            withContext(Dispatchers.Main) {
-                imageView.setImageBitmap(image)
+            try {
+                val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+                withContext(Dispatchers.Main) {
+                    imageView.setImageBitmap(image)
+                }
+                memoryCache.put(imageUrl, image)
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
             }
-            memoryCache.put(imageUrl, image)
         }
     }
 
