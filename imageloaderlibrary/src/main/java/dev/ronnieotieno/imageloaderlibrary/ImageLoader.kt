@@ -83,18 +83,20 @@ class ImageLoader(private val context: Context) : ComponentCallbacks2 {
         } else {
             val url = URL(imageUrl)
 
-            try {
-                if (isInternetAvailable(context)) {
-                    val image = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+
+            if (isInternetAvailable(context)) {
+                try {
+                    val image =
+                        BitmapFactory.decodeStream(url.openConnection().getInputStream())
                     withContext(Dispatchers.Main) {
                         imageView.setImageBitmap(image)
                     }
                     if (imageUrl != null && image != null) {
                         memoryCache.put(imageUrl, image)
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-            } catch (e: Error) {
-                e.printStackTrace()
             }
         }
     }
