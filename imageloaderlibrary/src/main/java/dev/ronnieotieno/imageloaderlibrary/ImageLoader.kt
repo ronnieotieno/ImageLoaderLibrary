@@ -74,7 +74,7 @@ class ImageLoader(private val context: Context) : ComponentCallbacks2 {
 
     private suspend fun loadBitmap(imageUrl: String, imageView: ImageView) {
 
-        val bitmap: Bitmap? = getBitmapFromMemCache(imageUrl)
+        val bitmap: Bitmap? = memoryCache[imageUrl]
 
         if (bitmap != null) {
             withContext(Dispatchers.Main) {
@@ -83,25 +83,23 @@ class ImageLoader(private val context: Context) : ComponentCallbacks2 {
         } else {
             val url = URL(imageUrl)
 
+
             if (isInternetAvailable(context)) {
                 try {
                     val image =
                         BitmapFactory.decodeStream(url.openConnection().getInputStream())
-
                     withContext(Dispatchers.Main) {
                         imageView.setImageBitmap(image)
                     }
-                    memoryCache.put(imageUrl, image)
-
+                    if (imageUrl != null && image != null) {
+                        //image?.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                        memoryCache.put(imageUrl, image)
+                    }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
         }
-    }
-
-    private fun getBitmapFromMemCache(key: String): Bitmap {
-        return memoryCache.get(key)
     }
 
     private fun isInternetAvailable(context: Context): Boolean {
