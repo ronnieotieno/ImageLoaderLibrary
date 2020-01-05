@@ -10,8 +10,8 @@ import dev.ronnieotieno.imageloader.databinding.PictureLayoutBinding
 import dev.ronnieotieno.imageloader.models.ImagesDataClass
 import dev.ronnieotieno.imageloaderlibrary.ImageLoader
 
-class RecyclerViewAdapter(var context: Context, var images: List<ImagesDataClass>) :
-    RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>() {
+class ImagesAdapter(var context: Context, var images: List<ImagesDataClass>) :
+    RecyclerView.Adapter<ImagesAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -65,7 +65,7 @@ class RecyclerViewAdapter(var context: Context, var images: List<ImagesDataClass
                 } else {
                     category = "Category: ${imageSend!!.categories[0].title}"
                 }
-                val intent = Intent(context, DetailsActivity::class.java)
+                val intent = Intent(context, ImagesDetailsActivity::class.java)
                 intent.putExtra("image", imageSend?.urls?.regular)
                 intent.putExtra("Creator", imageSend?.user?.name)
                 intent.putExtra("likes", "Likes: ${imageSend?.likes}" + "\n" + category)

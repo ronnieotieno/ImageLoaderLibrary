@@ -10,7 +10,7 @@ import dev.ronnieotieno.imageloaderlibrary.ImageLoader
 import kotlinx.android.synthetic.main.activity_detail.*
 
 
-class DetailsActivity : AppCompatActivity() {
+class ImagesDetailsActivity : AppCompatActivity() {
 
 
     private var isDetailLayout = false
