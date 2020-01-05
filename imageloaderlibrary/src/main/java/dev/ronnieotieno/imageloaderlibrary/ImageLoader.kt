@@ -12,6 +12,7 @@ import android.util.LruCache
 import android.widget.ImageView
 import android.widget.Toast
 import kotlinx.coroutines.*
+import java.io.ByteArrayOutputStream
 import java.net.URL
 
 
@@ -74,7 +75,7 @@ class ImageLoader(private val context: Context) : ComponentCallbacks2 {
 
     private suspend fun loadBitmap(imageUrl: String, imageView: ImageView) {
 
-        val bitmap: Bitmap? = memoryCache.get(imageUrl)
+        val bitmap: Bitmap? = getBitmapFromMemCache(imageUrl)
 
         if (bitmap != null) {
             withContext(Dispatchers.Main) {
@@ -83,22 +84,27 @@ class ImageLoader(private val context: Context) : ComponentCallbacks2 {
         } else {
             val url = URL(imageUrl)
 
-
             if (isInternetAvailable(context)) {
                 try {
-                    val image =
-                        BitmapFactory.decodeStream(url.openConnection().getInputStream())
-                    withContext(Dispatchers.Main) {
-                        imageView.setImageBitmap(image)
+                    BitmapFactory.decodeStream(url.openConnection().getInputStream()).also {
+                        val baos = ByteArrayOutputStream()
+                        withContext(Dispatchers.Main) {
+                            imageView.setImageBitmap(it)
+                        }
+                        it?.compress(Bitmap.CompressFormat.JPEG, 80, baos)
+                        memoryCache.put(imageUrl, it)
                     }
-                    if (imageUrl != null && image != null) {
-                        memoryCache.put(imageUrl, image)
-                    }
+
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
         }
+    }
+
+    fun getBitmapFromMemCache(key: String): Bitmap {
+        return memoryCache.get(key)
     }
 
     private fun isInternetAvailable(context: Context): Boolean {
