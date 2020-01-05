@@ -74,7 +74,7 @@ class ImageLoader(private val context: Context) : ComponentCallbacks2 {
 
     private suspend fun loadBitmap(imageUrl: String, imageView: ImageView) {
 
-        val bitmap: Bitmap? = memoryCache[imageUrl]
+        val bitmap: Bitmap? = memoryCache.get(imageUrl)
 
         if (bitmap != null) {
             withContext(Dispatchers.Main) {
