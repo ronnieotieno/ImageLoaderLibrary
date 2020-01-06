@@ -1,4 +1,4 @@
-package dev.ronnieotieno.imageloader
+package dev.ronnieotieno.imageloader.ui
 
 import android.os.Bundle
 import android.transition.ChangeBounds
@@ -6,6 +6,7 @@ import android.transition.TransitionManager
 import android.view.animation.AnticipateOvershootInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
+import dev.ronnieotieno.imageloader.R
 import dev.ronnieotieno.imageloaderlibrary.ImageLoader
 import kotlinx.android.synthetic.main.activity_detail.*
 
@@ -19,13 +20,7 @@ class ImagesDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        val intent = intent
-        val imageUrl = intent.getStringExtra("image")
-
-        ImageLoader(this).load(imageUrl, imvBackground)
-
-        txvTitle.text = intent.getStringExtra("Creator")
-        txvDescription.text = intent.getStringExtra("likes")
+        setIntent()
 
         constraintLayout.setOnClickListener {
             isDetailLayout = if (isDetailLayout) {
@@ -38,6 +33,15 @@ class ImagesDetailsActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    private fun setIntent() {
+        val intent = intent
+        val imageUrl = intent.getStringExtra("image")
+        ImageLoader(this).load(imageUrl, imvBackground)
+
+        txvTitle.text = intent.getStringExtra("Creator")
+        txvDescription.text = intent.getStringExtra("likes")
     }
 
 

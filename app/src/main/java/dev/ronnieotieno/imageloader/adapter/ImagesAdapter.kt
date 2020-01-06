@@ -1,4 +1,4 @@
-package dev.ronnieotieno.imageloader
+package dev.ronnieotieno.imageloader.adapter
 
 import android.content.Context
 import android.content.Intent
@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import dev.ronnieotieno.imageloader.ui.ImagesDetailsActivity
+import dev.ronnieotieno.imageloader.R
 import dev.ronnieotieno.imageloader.databinding.PictureLayoutBinding
 import dev.ronnieotieno.imageloader.models.ImagesDataClass
 import dev.ronnieotieno.imageloaderlibrary.ImageLoader
@@ -17,7 +19,8 @@ class ImagesAdapter(var context: Context, var images: List<ImagesDataClass>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val activityAdapterBinding = DataBindingUtil.inflate<PictureLayoutBinding>(
             LayoutInflater
-                .from(parent.context), R.layout.picture_layout, parent, false
+                .from(parent.context),
+            R.layout.picture_layout, parent, false
         )
         return MyViewHolder(activityAdapterBinding)
     }

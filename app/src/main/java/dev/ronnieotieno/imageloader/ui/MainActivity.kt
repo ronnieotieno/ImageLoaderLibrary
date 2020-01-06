@@ -1,11 +1,13 @@
-package dev.ronnieotieno.imageloader
+package dev.ronnieotieno.imageloader.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
+import dev.ronnieotieno.imageloader.adapter.ImagesAdapter
+import dev.ronnieotieno.imageloader.R
+import dev.ronnieotieno.imageloader.viewmodel.ImagesViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -22,10 +24,11 @@ class MainActivity : AppCompatActivity() {
         getImages()
     }
 
+    //test this
     private fun getImages() {
         imagesViewModel.getLivedata().observe(this, Observer {
-
-            val adapter = ImagesAdapter(this, it)
+            val adapter =
+                ImagesAdapter(this, it)
             recyclerView.layoutManager = GridLayoutManager(this, 2)
             recyclerView.adapter = adapter
 

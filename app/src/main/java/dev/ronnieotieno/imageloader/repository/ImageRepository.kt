@@ -1,7 +1,8 @@
-package dev.ronnieotieno.imageloader
+package dev.ronnieotieno.imageloader.repository
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import dev.ronnieotieno.imageloader.api.ImagesApi
 import dev.ronnieotieno.imageloader.models.ImagesDataClass
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,10 +21,12 @@ class ImageRepository {
 
     fun imageList(): MutableLiveData<ArrayList<ImagesDataClass>>{
 
+        val imagesApi = ImagesApi()
+
         val pictures = MutableLiveData<ArrayList<ImagesDataClass>>()
         val imageDataList: ArrayList<ImagesDataClass> = arrayListOf()
 
-        ImagesApi()
+       imagesApi
             .getPictures().enqueue(object : Callback<List<ImagesDataClass>> {
                 override fun onFailure(call: Call<List<ImagesDataClass>>, t: Throwable) {
 

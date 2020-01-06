@@ -1,8 +1,9 @@
-package dev.ronnieotieno.imageloader
+package dev.ronnieotieno.imageloader.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dev.ronnieotieno.imageloader.repository.ImageRepository
 import dev.ronnieotieno.imageloader.models.ImagesDataClass
 
 class ImagesViewModel : ViewModel() {

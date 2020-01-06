@@ -1,4 +1,4 @@
-package dev.ronnieotieno.imageloader
+package dev.ronnieotieno.imageloader.api
 
 import dev.ronnieotieno.imageloader.models.ImagesDataClass
 import retrofit2.Call
