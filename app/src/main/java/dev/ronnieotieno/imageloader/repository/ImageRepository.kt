@@ -8,22 +8,22 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ImageRepository {
+open class ImageRepository {
 
     private var instance: ImageRepository? = null
 
-    fun getInstance(): ImageRepository? {
+   open fun getInstance(): ImageRepository? {
         if (instance == null) {
             instance = ImageRepository()
         }
         return instance
     }
 
-    fun imageList(): MutableLiveData<ArrayList<ImagesDataClass>>{
+   open fun getImagesFromApi(): MutableLiveData<ArrayList<ImagesDataClass>>{
 
         val imagesApi = ImagesApi()
 
-        val pictures = MutableLiveData<ArrayList<ImagesDataClass>>()
+        val imagesLiveData = MutableLiveData<ArrayList<ImagesDataClass>>()
         val imageDataList: ArrayList<ImagesDataClass> = arrayListOf()
 
        imagesApi
@@ -41,7 +41,7 @@ class ImageRepository {
                     if (response.isSuccessful) {
 
                         imageDataList.addAll(response.body()!!)
-                        pictures.value = imageDataList
+                        imagesLiveData.value = imageDataList
                         Log.d("ImageRepository", "ImagesList ${response.body()}")
                     } else {
                         Log.d("ImageRepository", "ImagesList ${response.errorBody()}")
@@ -51,7 +51,7 @@ class ImageRepository {
 
             })
 
-        return pictures
+        return imagesLiveData
     }
 
 }

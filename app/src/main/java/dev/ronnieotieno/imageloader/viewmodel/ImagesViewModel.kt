@@ -3,29 +3,29 @@ package dev.ronnieotieno.imageloader.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import dev.ronnieotieno.imageloader.repository.ImageRepository
 import dev.ronnieotieno.imageloader.models.ImagesDataClass
+import dev.ronnieotieno.imageloader.repository.ImageRepository
 
 class ImagesViewModel : ViewModel() {
 
-    lateinit var liveData: MutableLiveData<ArrayList<ImagesDataClass>>
-    lateinit var repository: ImageRepository
+    private lateinit var imagesliveData: MutableLiveData<ArrayList<ImagesDataClass>>
+    private lateinit var imageRepository: ImageRepository
 
     fun init() {
 
-        if(::liveData.isInitialized){
-            if (liveData != null){
+        if (::imagesliveData.isInitialized) {
+            if (imagesliveData != null) {
                 return
             }
         }
-        repository = ImageRepository().getInstance()!!
-        liveData = repository.imageList()
+        imageRepository = ImageRepository().getInstance()!!
+        imagesliveData = imageRepository.getImagesFromApi()
 
     }
 
-    fun getLivedata(): LiveData<ArrayList<ImagesDataClass>> {
+    fun getLivedataFromViewModel(): LiveData<ArrayList<ImagesDataClass>> {
 
-        return liveData
+        return imagesliveData
 
     }
 }

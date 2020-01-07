@@ -20,7 +20,7 @@ class ImagesDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        setIntent()
+        setViewsFromIntentData()
 
         constraintLayout.setOnClickListener {
             isDetailLayout = if (isDetailLayout) {
@@ -35,7 +35,7 @@ class ImagesDetailsActivity : AppCompatActivity() {
 
     }
 
-    private fun setIntent() {
+    private fun setViewsFromIntentData() {
         val intent = intent
         val imageUrl = intent.getStringExtra("image")
         ImageLoader(this).load(imageUrl, imvBackground)

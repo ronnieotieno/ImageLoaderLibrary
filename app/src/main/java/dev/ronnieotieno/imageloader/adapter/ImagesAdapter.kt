@@ -36,12 +36,12 @@ class ImagesAdapter(var context: Context, var images: List<ImagesDataClass>) :
         holder.sendData(image)
 
         val imageLoader = ImageLoader(context)
-        imageLoader.load(image.urls.regular, holder.binding.imageView)
+        imageLoader.load(image.urls?.regular, holder.binding.imageView)
         //holder.binding.cardview.setBackgroundColor(Color.parseColor(image.color))
-        holder.binding.creator.text = image.user.name
+        holder.binding.creator.text = image.user?.name
         holder.binding.likes.text = "Likes: ${image.likes}"
 
-        image.categories[0].id
+        image.categories?.get(0)?.id
 
     }
 
@@ -61,13 +61,15 @@ class ImagesAdapter(var context: Context, var images: List<ImagesDataClass>) :
 
                 var category = "Categories: "
                 if (imageSend?.categories!!.size > 1) {
-                    for (i in imageSend!!.categories) {
+                    for (i in imageSend!!.categories!!) {
                         category += "${i.title}, "
                     }
                     category = category.substring(0, category.length - 2)
                 } else {
-                    category = "Category: ${imageSend!!.categories[0].title}"
+                    category = "Category: ${imageSend?.categories!![0].title}"
                 }
+
+
                 val intent = Intent(context, ImagesDetailsActivity::class.java)
                 intent.putExtra("image", imageSend?.urls?.regular)
                 intent.putExtra("Creator", imageSend?.user?.name)
